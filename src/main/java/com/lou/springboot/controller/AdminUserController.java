@@ -47,6 +47,25 @@ public class AdminUserController {
         return result;
     }
 
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public Result register (@RequestBody AdminUser user) {
+        Result result = ResultGenerator.genFailResult("注冊失败");
+        AdminUser tempUser = adminUserService.selectByUserName(user.getUserName());
+        if (tempUser != null) {
+            return ResultGenerator.genErrorResult(Constants.RESULT_CODE_PARAM_ERROR, "用户已存在！");
+        }
+        if (StringUtils.isEmpty(user.getUserName()) || StringUtils.isEmpty(user.getPassword())) {
+            return ResultGenerator.genErrorResult(Constants.RESULT_CODE_PARAM_ERROR, "参数异常！");
+        }
+        if ("admin".endsWith(user.getUserName().trim())) {
+            return ResultGenerator.genErrorResult(Constants.RESULT_CODE_PARAM_ERROR, "不能添加admin用户！");
+        }
+        if (adminUserService.save(user) > 0) {
+            return ResultGenerator.genSuccessResult();
+        } else {
+            return ResultGenerator.genFailResult("添加失败");
+        }
+    }
     /**
      * 保存
      */

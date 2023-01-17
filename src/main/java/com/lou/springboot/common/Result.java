@@ -17,11 +17,11 @@ public class Result<T> implements Serializable {
         this.message = message;
     }
 
-    public int getResultCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setResultCode(int code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
