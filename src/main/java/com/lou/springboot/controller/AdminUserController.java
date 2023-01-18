@@ -25,7 +25,10 @@ public class AdminUserController {
      * 列表
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public Result list(@RequestParam Map<String, Object> params) {
+    public Result list(@RequestParam Map<String, Object> params, @TokenToUser AdminUser loginUser) {
+        if (loginUser == null) {
+            return ResultGenerator.genErrorResult(Constants.RESULT_CODE_NOT_LOGIN, "未登录！");
+        }
         if (StringUtils.isEmpty(params.get("page")) || StringUtils.isEmpty(params.get("limit"))) {
             return ResultGenerator.genErrorResult(Constants.RESULT_CODE_PARAM_ERROR, "参数异常！");
         }
@@ -69,7 +72,7 @@ public class AdminUserController {
     /**
      * 保存
      */
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Result save(@RequestBody AdminUser user, @TokenToUser AdminUser loginUser) {
         if (loginUser == null) {
             return ResultGenerator.genErrorResult(Constants.RESULT_CODE_NOT_LOGIN, "未登录！");
@@ -89,6 +92,16 @@ public class AdminUserController {
         } else {
             return ResultGenerator.genFailResult("添加失败");
         }
+    }
+    /**
+     * 获取用户详情
+     */
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    public Result detail(@TokenToUser AdminUser loginUser) {
+        if (loginUser == null) {
+            return ResultGenerator.genErrorResult(Constants.RESULT_CODE_NOT_LOGIN, "未登录！");
+        }
+        return ResultGenerator.genSuccessResult(loginUser);
     }
 
     /**
